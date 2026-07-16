@@ -10,7 +10,9 @@ export default function Type() {
   const [isCompiling, setIsCompiling] = useState(false);
 
   const navigate = useNavigate();
-  const ctx = useOutletContext?.() || {};
+  
+  // FIXED: Removed conditional optional chaining from the Hook execution
+  const ctx = useOutletContext() || {};
   const addPost = ctx.addPost;
 
   const wrapRef = useRef(null);
@@ -57,23 +59,30 @@ export default function Type() {
     }
   }, [isCompiling]);
 
-  const handleCompileText = async (textToCompile) => {
-    if (!textToCompile.trim()) {
+  /* FIXED: Handle text compilation as a side effect with basic debouncing */
+  useEffect(() => {
+    if (!inputText.trim()) {
       setCompiledHtml('');
       return;
     }
-    setIsCompiling(true);
-    try {
-      const response = await axios.post('http://localhost:8000/api/v1/posts/compile', {
-        raw_content: textToCompile,
-      });
-      setCompiledHtml(response.data.compiled_html);
-    } catch (err) {
-      console.error('Compilation failure:', err.message);
-    } finally {
-      setIsCompiling(false);
-    }
-  };
+
+    const delayDebounce = setTimeout(async () => {
+      setIsCompiling(true);
+      try {
+        // NOTE: Replace 'http://localhost:8000' with an environment variable for production deployment
+        const response = await axios.post('http://localhost:8000/api/v1/posts/compile', {
+          raw_content: inputText,
+        });
+        setCompiledHtml(response.data.compiled_html);
+      } catch (err) {
+        console.error('Compilation failure:', err.message);
+      } finally {
+        setIsCompiling(false);
+      }
+    }, 400); // Wait 400ms after the user stops typing to call the API
+
+    return () => clearTimeout(delayDebounce);
+  }, [inputText]);
 
   const handlePublishPost = () => {
     if (!inputText.trim() || !compiledHtml) return;
@@ -122,10 +131,7 @@ export default function Type() {
         <textarea
           className="tp-textarea"
           value={inputText}
-          onChange={(e) => {
-            setInputText(e.target.value);
-            handleCompileText(e.target.value);
-          }}
+          onChange={(e) => setInputText(e.target.value)}
           placeholder="Compose your markdown layout here..."
         />
 

@@ -138,8 +138,8 @@ function PostCard({ post, index }) {
 
 /* ---------- Main Composer ---------- */
 export default function FeedComposer() {
-  const ctx = useOutletContext?.() || {};
-  const posts = ctx.posts;
+  // FIXED: Changed from safe optional chaining layout syntax back to explicit standard execution
+  const { posts = [] } = useOutletContext();
 
   const headerRef = useRef(null);
   const btnRef = useRef(null);
