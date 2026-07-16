@@ -70,7 +70,7 @@ export default function Type() {
       setIsCompiling(true);
       try {
         // NOTE: Replace 'http://localhost:8000' with an environment variable for production deployment
-        const response = await axios.post('http://localhost:8000/api/v1/posts/compile', {
+        const response = await axios.post('https://stack-be.onrender.com/api/v1/posts/compile', {
           raw_content: inputText,
         });
         setCompiledHtml(response.data.compiled_html);
