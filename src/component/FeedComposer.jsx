@@ -9,7 +9,9 @@ function formatRelativeTime(timestamp) {
   if (isNaN(postDate.getTime())) return 'just now';
 
   const now = new Date();
-  const diffInSeconds = Math.floor((now - postDate) / 1000);
+  // FIXED: Explicit conversion to avoid strict bundler compilation errors
+  const diffInSeconds = Math.floor((now.getTime() - postDate.getTime()) / 1000);
+  
   if (diffInSeconds < 60) return 'just now';
   const diffInMinutes = Math.floor(diffInSeconds / 60);
   if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
@@ -138,7 +140,6 @@ function PostCard({ post, index }) {
 
 /* ---------- Main Composer ---------- */
 export default function FeedComposer() {
-  // FIXED: Changed from safe optional chaining layout syntax back to explicit standard execution
   const { posts = [] } = useOutletContext();
 
   const headerRef = useRef(null);
