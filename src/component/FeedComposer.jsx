@@ -13,7 +13,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 // LOCALHOST BINDING
-const BASE_LOCAL_URL = "http://localhost:8000/api/v1";
+const BASE_LOCAL_URL = "https://stack-be.onrender.com/api/v1";
 
 // Global Timestamp Formatting Helper
 function formatRelativeTime(timestamp) {
