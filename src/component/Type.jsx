@@ -84,11 +84,13 @@ export default function Type() {
   const handlePublishPost = () => {
     if (!inputText.trim() || !compiledHtml) return;
 
-    // FIXED: Stripped down to data contracts matching MongoDB PostSavePayload schema
+    // FIXED: Enforced strict parsing on runtime value arrays to capture mobile input buffers safely
+    const finalImageString = String(imageUrl || '').trim();
+
     const newPostPayload = {
-      raw: inputText,
+      raw: inputText.trim(),
       html: compiledHtml,
-      postImage: imageUrl.trim()
+      postImage: finalImageString
     };
 
     // Celebratory flash before navigating
@@ -164,15 +166,24 @@ export default function Type() {
         </div>
       </section>
 
+      {/* ─── ENHANCED: PREVIEW CONSOLE LAYOUT STRATEGY FOR ALL DEVICES ─── */}
       {compiledHtml && (
-        <section ref={previewRef} className="tp-preview">
+        <section ref={previewRef} className="tp-preview" style={{ display: 'block', width: '100%', marginTop: '1.5rem' }}>
           <div className="tp-preview-head">
             <span className="tp-dot" />
             <strong>Compiler Live Preview</strong>
           </div>
           <div className="tp-preview-body" dangerouslySetInnerHTML={{ __html: compiledHtml }} />
-          {imageUrl && (
-            <img src={imageUrl} alt="Preview" className="tp-preview-img" />
+          {imageUrl.trim() && (
+            <div style={{ width: '100%', marginTop: '1rem', overflow: 'hidden', borderRadius: '8px' }}>
+              <img 
+                src={imageUrl.trim()} 
+                alt="Preview" 
+                className="tp-preview-img" 
+                style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '350px', objectFit: 'cover' }}
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+            </div>
           )}
         </section>
       )}
