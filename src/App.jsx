@@ -5,7 +5,7 @@ import Type from './component/Type';
 import axios from 'axios';
 
 // Unified Base API endpoint path mapping configuration
-const API_BASE_URL = "http://localhost:8000/api/v1";
+const API_BASE_URL = "https://stack-be.onrender.com/api/v1";
 
 // Global request interceptor to automatically attach authorization headers
 axios.interceptors.request.use(
