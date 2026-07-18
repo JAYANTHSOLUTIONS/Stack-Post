@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes, Outlet } from "react-router-dom";
 import Type from './component/Type';
 import axios from 'axios';
 
-const API_BASE_URL = "http://localhost:8000/api/v1/posts";
+const API_BASE_URL = "https://stack-be.onrender.com/api/v1/posts";
 
 function StateLayout() {
   const [posts, setPosts] = useState([]);

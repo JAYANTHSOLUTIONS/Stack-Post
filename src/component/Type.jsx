@@ -67,7 +67,7 @@ export default function Type() {
     const delayDebounce = setTimeout(async () => {
       setIsCompiling(true);
       try {
-        const response = await axios.post('http://localhost:8000/api/v1/posts/compile', {
+        const response = await axios.post('https://stack-be.onrender.com/api/v1/posts/compile', {
           raw_content: inputText,
         });
         setCompiledHtml(response.data.compiled_html);
