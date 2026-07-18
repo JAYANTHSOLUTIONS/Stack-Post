@@ -11,12 +11,10 @@ export default function Type() {
 
   const navigate = useNavigate();
   
-  // FIXED: Removed conditional optional chaining from the Hook execution
-  const ctx = useOutletContext() || {};
-  const addPost = ctx.addPost;
+  // Grab the safe base context layout object directly
+  const { addPost } = useOutletContext() || {};
 
   const wrapRef = useRef(null);
-  const headerRef = useRef(null);
   const cardRef = useRef(null);
   const publishRef = useRef(null);
   const previewRef = useRef(null);
@@ -25,7 +23,7 @@ export default function Type() {
   /* Entry animation */
   useLayoutEffect(() => {
     const gctx = gsap.context(() => {
-      gsap.from(headerRef.current, {
+      gsap.from(".tp-header", {
         y: -24, opacity: 0, duration: 0.6, ease: 'power3.out',
       });
       gsap.from(cardRef.current, {
@@ -59,7 +57,7 @@ export default function Type() {
     }
   }, [isCompiling]);
 
-  /* FIXED: Handle text compilation as a side effect with basic debouncing */
+  /* Handle text compilation as a side effect with basic debouncing */
   useEffect(() => {
     if (!inputText.trim()) {
       setCompiledHtml('');
@@ -69,8 +67,7 @@ export default function Type() {
     const delayDebounce = setTimeout(async () => {
       setIsCompiling(true);
       try {
-        // NOTE: Replace 'http://localhost:8000' with an environment variable for production deployment
-        const response = await axios.post('https://stack-be.onrender.com/api/v1/posts/compile', {
+        const response = await axios.post('http://localhost:8000/api/v1/posts/compile', {
           raw_content: inputText,
         });
         setCompiledHtml(response.data.compiled_html);
@@ -87,12 +84,11 @@ export default function Type() {
   const handlePublishPost = () => {
     if (!inputText.trim() || !compiledHtml) return;
 
+    // FIXED: Stripped down to data contracts matching MongoDB PostSavePayload schema
     const newPostPayload = {
-      id: crypto.randomUUID(),
       raw: inputText,
       html: compiledHtml,
-      postImage: imageUrl.trim(),
-      timestamp: new Date().toISOString(),
+      postImage: imageUrl.trim()
     };
 
     // Celebratory flash before navigating
@@ -121,7 +117,7 @@ export default function Type() {
 
   return (
     <div ref={wrapRef} className="tp-wrap">
-      <header ref={headerRef} className="tp-header">
+      <header className="tp-header">
         <h1 className="tp-title">Create a New Post</h1>
         <p className="tp-subtitle">Draft markdown, preview live, then commit to the queue.</p>
       </header>

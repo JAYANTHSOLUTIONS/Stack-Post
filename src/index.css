@@ -408,3 +408,121 @@
   border-radius: 14px;
   font-size: 0.95rem;
 }
+
+/* Container holding the absolute layout wrapper */
+.fc-menu {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 40;
+  display: inline-block;
+}
+
+/* Three-dot Button Base Styles */
+.fc-menu-btn {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.fc-menu-btn:hover {
+  background: #ffffff;
+  transform: scale(1.05);
+}
+
+/* Image overlay contextual modifier */
+.fc-menu-btn.has-image-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.fc-menu-btn.has-image-overlay:hover {
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+}
+
+/* Glassmorphism Dropdown List Container */
+.fc-dropdown {
+  position: absolute;
+  right: 0;
+  top: 46px;
+  min-width: 150px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1), 
+              0 8px 20px -6px rgba(0, 0, 0, 0.05);
+  transform-origin: top right;
+  overflow: hidden;
+}
+
+/* Dropdown Choices Selection Buttons */
+.fc-dropdown-item {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fc-dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #111827;
+}
+
+/* Destructive Delete Alternative */
+.fc-dropdown-item.text-danger {
+  color: #dc2626;
+}
+
+.fc-dropdown-item.text-danger:hover {
+  background: rgba(220, 38, 38, 0.08);
+  color: #b91c1c;
+}
+
+/* Divider Container Alignment */
+.fc-dropdown-divider {
+  padding: 0 !important;
+  margin: 0;
+}
+
+/* Material UI Icon alignment configuration */
+.fc-dropdown-icon {
+  margin-right: 10px !important;
+  font-size: 1.15rem !important;
+  vertical-align: middle;
+}
+
+/* Inline action structural overrides */
+.fc-icon-btn style {
+  display: none !important;
+}
+
+/* Mobile responsive constraints optimization */
+@media (max-width: 480px) {
+  .fc-dropdown {
+    right: -2px;
+    min-width: 140px;
+  }
+}
