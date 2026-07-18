@@ -7,7 +7,13 @@ export default function RightColumn({ currentUser, posts }) {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(ref.current?.children || [], { y: 15, opacity: 0, stagger: 0.08, duration: 0.4, ease: 'power2.out' });
+      gsap.from(ref.current?.children || [], { 
+        y: 20, 
+        opacity: 0, 
+        stagger: 0.12, 
+        duration: 0.5, 
+        ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+      });
     }, ref);
     return () => ctx.revert();
   }, []);

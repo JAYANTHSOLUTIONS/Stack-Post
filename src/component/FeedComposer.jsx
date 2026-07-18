@@ -50,17 +50,18 @@ export default function FeedComposer() {
   useEffect(() => {
     if (isSiteLoading) {
       const loadTl = gsap.timeline();
-      loadTl.to({}, { duration: 1.2 });
       
       if (loaderRef.current) {
         loadTl.to(loaderRef.current, {
           opacity: 0,
-          duration: 0.4,
-          ease: 'power2.inOut',
+          scale: 0.95,
+          duration: 0.6,
+          ease: 'cubic-bezier(0.4, 0, 0.2, 1)',
+          delay: 1.4,
           onComplete: () => setIsSiteLoading(false)
         });
       } else {
-        setIsSiteLoading(false);
+        loadTl.to({}, { duration: 0.5, onComplete: () => setIsSiteLoading(false) });
       }
       return () => loadTl.kill();
     }
@@ -71,24 +72,24 @@ export default function FeedComposer() {
 
       if (headerRef.current) {
         introTl.fromTo(headerRef.current, 
-          { y: -25, opacity: 0 }, 
-          { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+          { y: -30, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: 0.7, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }
         );
       }
 
       if (document.querySelector(".fc-flat-card")) {
         introTl.fromTo(".fc-flat-card", 
-          { y: 20, opacity: 0 }, 
-          { y: 0, opacity: 1, stagger: 0.12, duration: 0.5, ease: 'power2.out' },
-          "-=0.3"
+          { y: 25, opacity: 0 }, 
+          { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' },
+          "-=0.4"
         );
       }
 
       if (document.querySelector(".fc-card")) {
         introTl.fromTo(".fc-card", 
-          { y: 30, opacity: 0 }, 
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: 'power3.out' },
-          "-=0.4"
+          { y: 35, opacity: 0 }, 
+          { y: 0, opacity: 1, stagger: 0.08, duration: 0.65, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' },
+          "-=0.5"
         );
       }
     });
@@ -99,9 +100,19 @@ export default function FeedComposer() {
   useEffect(() => {
     if (!userDropdownRef.current) return;
     if (isAvatarDropdownOpen) {
-      gsap.fromTo(userDropdownRef.current, { display: 'none', opacity: 0, scale: 0.98, y: -5 }, { display: 'block', opacity: 1, scale: 1, y: 0, duration: 0.18, ease: 'power2.out' });
+      gsap.fromTo(userDropdownRef.current, 
+        { display: 'none', opacity: 0, scale: 0.92, y: -15 }, 
+        { display: 'block', opacity: 1, scale: 1, y: 0, duration: 0.25, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }
+      );
     } else {
-      gsap.to(userDropdownRef.current, { opacity: 0, scale: 0.98, y: -5, duration: 0.12, ease: 'power2.in', onComplete: () => { if (userDropdownRef.current) userDropdownRef.current.style.display = 'none'; } });
+      gsap.to(userDropdownRef.current, { 
+        opacity: 0, 
+        scale: 0.92, 
+        y: -15, 
+        duration: 0.18, 
+        ease: 'power2.in', 
+        onComplete: () => { if (userDropdownRef.current) userDropdownRef.current.style.display = 'none'; } 
+      });
     }
   }, [isAvatarDropdownOpen]);
 

@@ -42,19 +42,31 @@ export default function PostCard({ post, index, currentUser, onDelete, onEdit, o
   const displayDropdownMenuButton = isPostOwner || isSystemAdmin;
 
   useEffect(() => {
+    if (!cardRef.current) return;
+    
+    gsap.from(cardRef.current, {
+      opacity: 0,
+      y: 30,
+      duration: 0.6,
+      ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      delay: index * 0.08
+    });
+  }, [index]);
+
+  useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
 
     const onMouseEnter = () => {
       gsap.to(el, {
-        y: -4,
-        scale: 1.01,
-        borderColor: isDarkMode ? '#EF4444' : '#4F46E5',
+        y: -8,
+        scale: 1.02,
+        borderColor: isDarkMode ? '#A78BFA' : '#6366F1',
         boxShadow: isDarkMode 
-          ? '0 20px 30px rgba(239, 68, 68, 0.15)' 
-          : '0 20px 40px rgba(79, 70, 229, 0.08)',
-        duration: 0.3,
-        ease: 'power2.out'
+          ? '0 20px 40px rgba(99, 102, 241, 0.25)' 
+          : '0 20px 50px rgba(99, 102, 241, 0.12)',
+        duration: 0.35,
+        ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
       });
     };
 
@@ -66,7 +78,7 @@ export default function PostCard({ post, index, currentUser, onDelete, onEdit, o
         boxShadow: isDarkMode 
           ? '0 4px 20px rgba(0,0,0,0.4)' 
           : '0 4px 12px rgba(0,0,0,0.02)',
-        duration: 0.25,
+        duration: 0.3,
         ease: 'power2.inOut'
       });
     };
@@ -89,7 +101,10 @@ export default function PostCard({ post, index, currentUser, onDelete, onEdit, o
   useEffect(() => {
     if (!dropdownRef.current) return;
     if (isMenuOpen) {
-      gsap.fromTo(dropdownRef.current, { opacity: 0, scale: 0.95, y: -10 }, { opacity: 1, scale: 1, y: 0, duration: 0.18, ease: 'power2.out' });
+      gsap.fromTo(dropdownRef.current, 
+        { opacity: 0, scale: 0.92, y: -15 }, 
+        { opacity: 1, scale: 1, y: 0, duration: 0.25, ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)' }
+      );
     }
   }, [isMenuOpen]);
 
@@ -110,7 +125,18 @@ export default function PostCard({ post, index, currentUser, onDelete, onEdit, o
   const handleLikeToggleClick = async () => {
     if (!currentUser) return;
     try {
-      gsap.fromTo(heartRef.current, { scale: 1 }, { scale: 1.4, duration: 0.12, yoyo: true, repeat: 1, ease: 'back.out(2)' });
+      const tl = gsap.timeline();
+      tl.to(heartRef.current, { 
+        scale: 1.6, 
+        duration: 0.15, 
+        ease: 'back.out(3)'
+      })
+      .to(heartRef.current, { 
+        scale: 1, 
+        duration: 0.2, 
+        ease: 'elastic.out(1, 0.3)'
+      }, 0.08);
+      
       const response = await axios.post(`${BASE_LOCAL_URL}/posts/${post.id}/like`);
       if (response.data.status === 'success') {
         if (typeof post.onLikesUpdate === 'function') {

@@ -19,7 +19,24 @@ export default function AuthPanel({ onLoginSuccess }) {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(cardRef.current, { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out' });
+      const tl = gsap.timeline();
+      tl.from(cardRef.current, { 
+        y: 30, 
+        opacity: 0, 
+        duration: 0.6, 
+        ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+      })
+      .from('.fc-auth-hero', {
+        opacity: 0,
+        duration: 0.3
+      }, 0)
+      .from('.fc-auth-form > *', {
+        opacity: 0,
+        y: 15,
+        stagger: 0.08,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, 0.2);
     }, cardRef);
     return () => ctx.revert();
   }, []);
