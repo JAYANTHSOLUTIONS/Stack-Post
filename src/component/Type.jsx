@@ -5,7 +5,8 @@ import { gsap } from 'gsap';
 
 export default function Type() {
   const [inputText, setInputText] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(''); // Stores local binary object blob string for instant UI render
   const [compiledHtml, setCompiledHtml] = useState('');
   const [isCompiling, setIsCompiling] = useState(false);
 
@@ -67,7 +68,7 @@ export default function Type() {
     const delayDebounce = setTimeout(async () => {
       setIsCompiling(true);
       try {
-        const response = await axios.post('https://stack-be.onrender.com/api/v1/posts/compile', {
+        const response = await axios.post('http://localhost:8000/api/v1/posts/compile', {
           raw_content: inputText,
         });
         setCompiledHtml(response.data.compiled_html);
@@ -81,16 +82,23 @@ export default function Type() {
     return () => clearTimeout(delayDebounce);
   }, [inputText]);
 
+  // Capture file buffer map from native local explorer prompt interaction
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file)); // Assign ephemeral runtime tracking reference
+    }
+  };
+
   const handlePublishPost = () => {
     if (!inputText.trim() || !compiledHtml) return;
 
-    // FIXED: Enforced strict parsing on runtime value arrays to capture mobile input buffers safely
-    const finalImageString = String(imageUrl || '').trim();
-
+    // Build data layout payload containing binary parameters
     const newPostPayload = {
       raw: inputText.trim(),
       html: compiledHtml,
-      postImage: finalImageString
+      imageFile: selectedFile
     };
 
     // Celebratory flash before navigating
@@ -99,7 +107,8 @@ export default function Type() {
       onComplete: () => {
         addPost?.(newPostPayload);
         setInputText('');
-        setImageUrl('');
+        setSelectedFile(null);
+        setPreviewUrl('');
         setCompiledHtml('');
         navigate('/');
       },
@@ -121,7 +130,7 @@ export default function Type() {
     <div ref={wrapRef} className="tp-wrap">
       <header className="tp-header">
         <h1 className="tp-title">Create a New Post</h1>
-        <p className="tp-subtitle">Draft markdown, preview live, then commit to the queue.</p>
+        <p className="tp-subtitle">Draft markdown, attach local pictures, and commit to the live cluster database.</p>
       </header>
 
       <section ref={cardRef} className="tp-card">
@@ -133,14 +142,23 @@ export default function Type() {
           placeholder="Compose your markdown layout here..."
         />
 
-        <label className="tp-label">Image URL <span className="tp-optional">(optional)</span></label>
-        <input
-          type="text"
-          className="tp-input"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          placeholder="https://example.com/image.jpg"
-        />
+        {/* ─── FILE SELECTION INTERFACE CONTROLS ─── */}
+        <label className="tp-label">Upload Photo from Local PC</label>
+        <div style={{ margin: '0.5rem 0 1.25rem 0' }}>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            style={{
+              width: '100%',
+              padding: '0.5rem',
+              background: '#f9fafb',
+              border: '1px dashed #d1d5db',
+              borderRadius: '8px',
+              cursor: 'pointer'
+            }}
+          />
+        </div>
 
         <div className="tp-actions">
           <div className="tp-status">
@@ -166,7 +184,7 @@ export default function Type() {
         </div>
       </section>
 
-      {/* ─── ENHANCED: PREVIEW CONSOLE LAYOUT STRATEGY FOR ALL DEVICES ─── */}
+      {/* ─── PREVIEW CONSOLE LAYOUT STRATEGY FOR ALL DEVICES ─── */}
       {compiledHtml && (
         <section ref={previewRef} className="tp-preview" style={{ display: 'block', width: '100%', marginTop: '1.5rem' }}>
           <div className="tp-preview-head">
@@ -174,14 +192,13 @@ export default function Type() {
             <strong>Compiler Live Preview</strong>
           </div>
           <div className="tp-preview-body" dangerouslySetInnerHTML={{ __html: compiledHtml }} />
-          {imageUrl.trim() && (
+          {previewUrl && (
             <div style={{ width: '100%', marginTop: '1rem', overflow: 'hidden', borderRadius: '8px' }}>
               <img 
-                src={imageUrl.trim()} 
-                alt="Preview" 
+                src={previewUrl} 
+                alt="Local Preview" 
                 className="tp-preview-img" 
                 style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '350px', objectFit: 'cover' }}
-                onError={(e) => { e.target.style.display = 'none'; }}
               />
             </div>
           )}
